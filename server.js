@@ -20,11 +20,8 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", {
 
 app.get("/exercise", (req, res) => {
   //TODO get query string in get requst by req.query.id, see workout.js
-  // if (req.query.id) {
-  //   res.redirect("/");
-  // } else {
+  // if (req.query.id)
   res.sendFile(path.join(__dirname, "public/exercise.html"));
-  // }
 });
 
 app.get("/stats", (req, res) => {
