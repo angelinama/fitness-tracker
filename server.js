@@ -6,6 +6,8 @@ const path = require("path");
 const PORT = process.env.PORT || 3080;
 
 const app = express();
+const db = require("./models");
+
 app.use(logger("dev"));
 
 app.use(express.urlencoded({ extended: true }));
@@ -18,6 +20,7 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", {
   useFindAndModify: false,
 });
 
+//html routes
 app.get("/exercise", (req, res) => {
   //TODO get query string in get requst by req.query.id, see workout.js
   // if (req.query.id)
@@ -26,6 +29,17 @@ app.get("/exercise", (req, res) => {
 
 app.get("/stats", (req, res) => {
   res.sendFile(path.join(__dirname, "public/stats.html"));
+});
+
+//api routes
+app.get("/api/workouts", (req, res) => {
+  db.Workout.find({})
+    .then((dbLibrary) => {
+      res.json(dbLibrary);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
 });
 app.listen(PORT, () => {
   console.log(`listening to ${PORT}`);
