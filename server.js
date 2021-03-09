@@ -45,12 +45,9 @@ app.get("/api/workouts", (req, res) => {
 
 app.get("/api/workouts/range", (req, res) => {
   //TODO totalDuration
-  db.Workout.find({
-    //last seven days
-    day: {
-      $gte: new Date(new Date().getDate() - 7),
-    },
-  })
+  db.Workout.find({})
+    .sort({ $natural: -1 })
+    .limit(7)
     .then((dbWorkout) => {
       res.json(dbWorkout);
     })
