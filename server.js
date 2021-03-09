@@ -32,8 +32,13 @@ app.get("/stats", (req, res) => {
 
 //-------------------api routes----------------------
 app.get("/api/workouts", (req, res) => {
-  //TODO totalDuration
-  db.Workout.find({})
+  db.Workout.aggregate([
+    {
+      $addFields: {
+        totalDuration: { $sum: "$exercises.duration" },
+      },
+    },
+  ])
     .then((dbWorkout) => {
       res.json(dbWorkout);
     })
@@ -43,7 +48,6 @@ app.get("/api/workouts", (req, res) => {
 });
 
 app.get("/api/workouts/range", (req, res) => {
-  //TODO totalDuration
   db.Workout.find({})
     .sort({ $natural: -1 })
     .limit(7)
