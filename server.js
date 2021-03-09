@@ -56,10 +56,10 @@ app.get("/api/workouts/range", (req, res) => {
         totalDuration: { $sum: "$exercises.duration" },
       },
     },
-    { $limit: 7 },
+    { $sort: { _id: -1 } },
+    { $limit: 7 }, //first sort + limit to get the last 7 records
+    { $sort: { _id: 1 } }, //since the data is in reverse order, do a second sort to reverse it back
   ])
-    // .sort({ $natural: -1 })
-    // .limit(7)
     .then((dbWorkout) => {
       res.json(dbWorkout);
     })
