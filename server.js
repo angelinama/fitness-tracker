@@ -18,6 +18,8 @@ app.use(express.static(path.join(__dirname, "public")));
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", {
   useNewUrlParser: true,
   useFindAndModify: false,
+  useCreateIndex: true,
+  useUnifiedTopology: true,
 });
 
 //------------------html routes---------------------
@@ -48,9 +50,16 @@ app.get("/api/workouts", (req, res) => {
 });
 
 app.get("/api/workouts/range", (req, res) => {
-  db.Workout.find({})
-    .sort({ $natural: -1 })
-    .limit(7)
+  db.Workout.aggregate([
+    {
+      $addFields: {
+        totalDuration: { $sum: "$exercises.duration" },
+      },
+    },
+    { $limit: 7 },
+  ])
+    // .sort({ $natural: -1 })
+    // .limit(7)
     .then((dbWorkout) => {
       res.json(dbWorkout);
     })
